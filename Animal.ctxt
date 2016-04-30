@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=field\ location
+comment0.target=Animal(Field,\ Location)
+comment0.text=\n\ Create\ a\ new\ animal\ at\ location\ in\ field.\n\ \n\ @param\ field\ The\ field\ currently\ occupied.\n\ @param\ location\ The\ location\ within\ the\ field.\n
+comment1.params=newActors
+comment1.target=void\ act(java.util.List)
+comment1.text=\n\ Make\ this\ animal\ act\ -\ that\ is\:\ make\ it\ do\n\ whatever\ it\ wants/needs\ to\ do.\n\ @param\ newAnimals\ A\ list\ to\ add\ newly\ born\ animals\ to.\n
+comment2.params=
+comment2.target=boolean\ canBreed()
+comment2.text=\n\ An\ Animal\ can\ breed\ if\ it\ has\ reached\ the\ breeding\ age.\n\ @return\ true\ if\ the\ Animal\ can\ breed,\ false\ otherwise.\n
+comment3.params=
+comment3.target=int\ getBreedingAge()
+comment3.text=\n\ Return\ the\ breeding\ age\ for\ an\ Animal.\n\ @return\ the\ breeding\ age\ for\ an\ Animal.\n
+numComments=4

@@ -9,7 +9,7 @@ import java.util.Random;
  * @author David J. Barnes and Michael Kolling
  * @version 2008.03.30
  */
-public class Fox
+public class Fox extends Animal
 {
     // Characteristics shared by all foxes (static fields).
     
@@ -28,15 +28,7 @@ public class Fox
     private static final Random rand = Randomizer.getRandom();
     
     // Individual characteristics (instance fields).
-
-    // The fox's age.
-    private int age;
-    // Whether the fox is alive or not.
-    private boolean alive;
-    // The fox's position.
-    private Location location;
-    // The field occupied.
-    private Field field;
+    
     // The fox's food level, which is increased by eating rabbits.
     private int foodLevel;
 
@@ -50,16 +42,13 @@ public class Fox
      */
     public Fox(boolean randomAge, Field field, Location location)
     {
-        age = 0;
-        alive = true;
-        this.field = field;
-        setLocation(location);
+        super(field, location);
         if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
+            setAge(rand.nextInt(MAX_AGE));
             foodLevel = rand.nextInt(RABBIT_FOOD_VALUE);
         }
         else {
-            // leave age at 0
+            setAge(0);
             foodLevel = RABBIT_FOOD_VALUE;
         }
     }
@@ -71,17 +60,18 @@ public class Fox
      * @param field The field currently occupied.
      * @param newFoxes A list to add newly born foxes to.
      */
-    public void hunt(List<Fox> newFoxes)
+    public void act(List<Actor> newFoxes)
     {
-        incrementAge();
+        incrementAge(MAX_AGE);
         incrementHunger();
-        if(alive) {
+        if(isAlive()) {
             giveBirth(newFoxes);            
             // Move towards a source of food if found.
+            Location location = getLocation();
             Location newLocation = findFood(location);
             if(newLocation == null) { 
                 // No food found - try to move to a free location.
-                newLocation = field.freeAdjacentLocation(location);
+                newLocation = getField().freeAdjacentLocation(location);
             }
             // See if it was possible to move.
             if(newLocation != null) {
@@ -94,48 +84,6 @@ public class Fox
         }
     }
 
-    /**
-     * Check whether the fox is alive or not.
-     * @return True if the fox is still alive.
-     */
-    public boolean isAlive()
-    {
-        return alive;
-    }
-
-    /**
-     * Return the fox's location.
-     * @return The fox's location.
-     */
-    public Location getLocation()
-    {
-        return location;
-    }
-    
-    /**
-     * Place the fox at the new location in the given field.
-     * @param newLocation The fox's new location.
-     */
-    private void setLocation(Location newLocation)
-    {
-        if(location != null) {
-            field.clear(location);
-        }
-        location = newLocation;
-        field.place(this, newLocation);
-    }
-    
-    /**
-     * Increase the age. This could result in the fox's death.
-     */
-    private void incrementAge()
-    {
-        age++;
-        if(age > MAX_AGE) {
-            setDead();
-        }
-    }
-    
     /**
      * Make this fox more hungry. This could result in the fox's death.
      */
@@ -155,7 +103,8 @@ public class Fox
      */
     private Location findFood(Location location)
     {
-        List<Location> adjacent = field.adjacentLocations(location);
+        Field field = getField();
+        List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
         while(it.hasNext()) {
             Location where = it.next();
@@ -178,11 +127,12 @@ public class Fox
      * New births will be made into free adjacent locations.
      * @param newFoxes A list to add newly born foxes to.
      */
-    private void giveBirth(List<Fox> newFoxes)
+    private void giveBirth(List<Actor> newFoxes)
     {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
-        List<Location> free = field.getFreeAdjacentLocations(location);
+        Field field = getField();
+        List<Location> free = field.getFreeAdjacentLocations(getLocation());
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
@@ -206,24 +156,11 @@ public class Fox
     }
 
     /**
-     * A fox can breed if it has reached the breeding age.
+     * Return the breeding age for a Fox.
+     * @return the breeding age for a Fox.
      */
-    private boolean canBreed()
+    public int getBreedingAge()
     {
-        return age >= BREEDING_AGE;
-    }
-
-    /**
-     * Indicate that the fox is no longer alive.
-     * It is removed from the field.
-     */
-    private void setDead()
-    {
-        alive = false;
-        if(location != null) {
-            field.clear(location);
-            location = null;
-            field = null;
-        }
+        return BREEDING_AGE;
     }
 }

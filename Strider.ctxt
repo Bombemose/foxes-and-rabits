@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.params=randomAge\ field\ location
+comment0.target=Strider(boolean,\ Field,\ Location)
+comment0.text=\n\ Create\ a\ new\ STRIDER.\ A\ STRIDER\ may\ be\ created\ with\ age\n\ zero\ (a\ new\ born)\ or\ with\ a\ random\ age.\n\ \n\ @param\ randomAge\ If\ true,\ the\ rabbit\ will\ have\ a\ random\ age.\n\ @param\ field\ The\ field\ currently\ occupied.\n\ @param\ location\ The\ location\ within\ the\ field.\n
+comment1.params=newStriders
+comment1.target=void\ act(java.util.List)
+comment1.text=\n\ This\ is\ what\ the\ strider\ does\ most\ of\ the\ time\ -\ it\ moves\ \n\ around.\n\ @param\ newRabbits\ A\ list\ to\ add\ newly\ born\ rabbits\ to.\n
+numComments=2

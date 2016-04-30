@@ -103,6 +103,7 @@ public class SimulatorView extends JFrame
             for(int col = 0; col < field.getWidth(); col++) {
                 Object animal = field.getObjectAt(row, col);
                 if(animal != null) {
+                    //System.out.println("Fandt en strider på " + row + "," + col);
                     stats.incrementCount(animal.getClass());
                     fieldView.drawMark(col, row, getColor(animal.getClass()));
                 }

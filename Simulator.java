@@ -23,9 +23,8 @@ public class Simulator
     // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;    
 
-    // Lists of animals in the field. Separate lists are kept for ease of iteration.
-    private List<Rabbit> rabbits;
-    private List<Fox> foxes;
+    // List of animals in the field.
+    private List<Actor> actors;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -55,14 +54,14 @@ public class Simulator
             width = DEFAULT_WIDTH;
         }
         
-        rabbits = new ArrayList<Rabbit>();
-        foxes = new ArrayList<Fox>();
+        actors = new ArrayList<Actor>();
         field = new Field(depth, width);
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
         view.setColor(Rabbit.class, Color.orange);
         view.setColor(Fox.class, Color.blue);
+        view.setColor(Strider.class, Color.red);
         
         // Setup a valid starting point.
         reset();
@@ -98,31 +97,19 @@ public class Simulator
     {
         step++;
 
-        // Provide space for newborn rabbits.
-        List<Rabbit> newRabbits = new ArrayList<Rabbit>();        
-        // Let all rabbits act.
-        for(Iterator<Rabbit> it = rabbits.iterator(); it.hasNext(); ) {
-            Rabbit rabbit = it.next();
-            rabbit.run(newRabbits);
-            if(! rabbit.isAlive()) {
+        // Provide space for newborn Actors.
+        List<Actor> newActors = new ArrayList<Actor>();        
+        // Let all Actors act.
+        for(Iterator<Actor> it = actors.iterator(); it.hasNext(); ) {
+            Actor actor = it.next();
+            actor.act(newActors);
+            if(! actor.isAlive()) {
                 it.remove();
             }
         }
-        
-        // Provide space for newborn foxes.
-        List<Fox> newFoxes = new ArrayList<Fox>();        
-        // Let all foxes act.
-        for(Iterator<Fox> it = foxes.iterator(); it.hasNext(); ) {
-            Fox fox = it.next();
-            fox.hunt(newFoxes);
-            if(! fox.isAlive()) {
-                it.remove();
-            }
-        }
-        
+               
         // Add the newly born foxes and rabbits to the main lists.
-        rabbits.addAll(newRabbits);
-        foxes.addAll(newFoxes);
+        actors.addAll(newActors);
 
         view.showStatus(step, field);
     }
@@ -133,8 +120,7 @@ public class Simulator
     public void reset()
     {
         step = 0;
-        rabbits.clear();
-        foxes.clear();
+        actors.clear();
         populate();
         
         // Show the starting state in the view.
@@ -148,20 +134,31 @@ public class Simulator
     {
         Random rand = Randomizer.getRandom();
         field.clear();
+        
+        //Place one strider in a random free locaton
+        int striderRow = rand.nextInt(field.getDepth());
+        int striderCol = rand.nextInt(field.getWidth());
+        
+        Location striderLocation = field.randomAdjacentLocation(new Location(0, 0));
+        Strider strider = new Strider(true, field, striderLocation);
+        actors.add(strider);
+        
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Fox fox = new Fox(true, field, location);
-                    foxes.add(fox);
+                    actors.add(fox);
                 }
                 else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Rabbit rabbit = new Rabbit(true, field, location);
-                    rabbits.add(rabbit);
+                    actors.add(rabbit);
                 }
                 // else leave the location empty.
             }
         }
+        
     }
+    
 }
