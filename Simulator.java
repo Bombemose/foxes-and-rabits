@@ -139,7 +139,7 @@ public class Simulator
         int striderRow = rand.nextInt(field.getDepth());
         int striderCol = rand.nextInt(field.getWidth());
         
-        Location striderLocation = field.randomAdjacentLocation(new Location(0, 0));
+        Location striderLocation = field.randomAdjacentLocation(new Location(striderRow, striderCol));
         Strider strider = new Strider(true, field, striderLocation);
         actors.add(strider);
         

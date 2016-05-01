@@ -21,10 +21,15 @@ public class Fox extends Animal
     private static final double BREEDING_PROBABILITY = 0.35;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 5;
+    
+    // The food value of a single Strider. In effect, this is the
+    // number of steps a fox can go before it has to eat again.
+    private static final int STRIDER_FOOD_VALUE = 20;
+    // A shared random number generator to control breeding.
+    
     // The food value of a single rabbit. In effect, this is the
     // number of steps a fox can go before it has to eat again.
     private static final int RABBIT_FOOD_VALUE = 7;
-    // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
     // Individual characteristics (instance fields).
@@ -115,6 +120,17 @@ public class Fox extends Animal
                     rabbit.setDead();
                     foodLevel = RABBIT_FOOD_VALUE;
                     // Remove the dead rabbit from the field.
+                    return where;
+                }
+            }
+            else if(animal instanceof Strider) {
+                Strider strider = (Strider) animal;
+                //Only eat "old" Strider
+                if(strider.isAlive() && strider.getAge() > 300) { 
+                    strider.setDead();
+                    foodLevel = STRIDER_FOOD_VALUE;
+                    System.out.println("Strider død, spist af ræv");
+                    // Remove the dead Strider from the field.
                     return where;
                 }
             }
